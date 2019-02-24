@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>My Map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+         * element that contains the map. */
+        #map {
+          height: 100%;
+          /*margin-left: 500px;*/
+          padding: 0;
+    
+        }
+        /* Optional: Makes the sample page fill the window. */
+        body, html{
+          height: 100%;
+          padding: 0;
+        }
+        ol{
+            /*display:none;*/
+            font-weight:bold;
+            list-style-type:none;
+           /* background-color:black; */
+        }
+        li{
+            /*background-color:white; */
+            margin: 1px 0 0 0;
+            list-style-type:none;
+            cursor:pointer;
+            color:#000;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #097479;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            margin-left: 140px;
+        }
+        .dropdown-content a {
+          float: none;
+          color: black;
+          padding: 12px 16px;
+          text-decoration: none;
+          display: block;
+          text-align: right;
+          cursor:pointer;
+        }
+
+        .dropdown-content a:hover {
+          background-color: #016064;
+        }
+        .conn_usr{
+            text-align: right;
+            padding: 12px 16px;
+        }
+        
+    </style>
+    
+  </head>
+
+  <body>
+
+  <div id="map"></div>
+  <div class="dropdown-content" id="myDropdown">
+    <p id="lgt" class="conn_usr">Connected user</p>
+    <a onclick="theScope.send({payload:0, refresh:'no'})">Logout</a>
+  </div>
+
+    <script>
+    //watch for new msg
+        theScope = scope;
+        (function(scope) {
+            var p = document.getElementById('lgt');
+            scope.$watch('msg', function(data) {
+                if(data){
+                    p.innerHTML = data.user;
+                    initMap(data);
+                }
+            });
+        })(scope);
+        
+        var stockholm = {lat:59.3293, lng:18.0686};
+        var map;
+        var a = 'a';
+        
+        //maps callback function
+        function initMap(data) {
+        
+        var options={
+          zoom:3,
+          center:stockholm
+        }
+        
+      
+        var infoWindow = new google.maps.InfoWindow();
+        
+        map = new google.maps.Map(document.getElementById('map'), options);
+      
+        //create markers function
+        function _newGoogleMapsMarker(param) {
+            var r = new google.maps.Marker({
+            map: param._map,
+            position: new google.maps.LatLng(param._lat, param._lng),
+            title: param._head,
+            animation: google.maps.Animation.DROP
+        });
+            if (param._data) {
+                google.maps.event.addListener(r, 'click', function() {
+                    // this -> the marker on which the onclick event is being attached
+                    if (!this.getMap()._infoWindow) {
+                        this.getMap()._infoWindow = new google.maps.InfoWindow();
+                    }
+                    this.getMap()._infoWindow.close();
+                    //param._data.style.display="block";
+                    this.getMap()._infoWindow.setContent(param._data);
+                    this.getMap()._infoWindow.open(this.getMap(), this);
+                });
+            }
+            return r;
+    }
+        //Loop through the db result set for markers + infoWindows
+        for (var a = 0; a < data.payload.length; a++) {
+            var tmpLat = data.payload[a].lat;
+            var tmpLng = data.payload[a].lng;
+            var temp=data.payload[a].unitss;
+            var units=temp.split(',');
+                
+            var content = document.createElement('OL');
+            units.forEach(function(unit){
+                var li = document.createElement('LI');
+                li.innerHTML += unit;
+                li.onclick= function(){theScope.send({topic:unit,refresh:'no'})};
+                content.appendChild(li);
+            });
+            
+            var marker = _newGoogleMapsMarker({
+                _map: map,
+                _lat: tmpLat,
+                _lng: tmpLng,
+               _data: content
+            }); 
+        
+        } //FOR LOOP
+  
+    }//INITMAP
+      
+
+    </script>
+    
+    <!-- SearchBar script -->
+    <script id="titleScript" type="text/javascript">
+
+    $('#myID').remove();
+
+    var toolbar = $('.md-toolbar-tools');
+    var div = $('<div/ id="myID">');
+    var input = $('<input/ id="inpt" type="text" name="searchTerm" placeholder="Search.." style="font-style:italic; background-color:#016064; border:none">');
+    var searchBtn = $('<button/  class="fa fa-search" onclick="theScope.send({payload:1,topic:takeInput(),refresh:\'no\'});" style="height:32px; width:32px; border:none; background:transparent; padding: 8px 15px 8px 5px ; ">');
+    var usrBtn = $('<button/ class="dropbtn" onclick="userButton()" style="background:transparent; border:none;">');
+    var usrIcon = $('<i/ class="fa fa-user-circle">');
+
+    function takeInput(){
+        var x = document.getElementById("inpt").value;
+        return x;
+    }
+    
+    var dropdown = document.getElementById("myDropdown");
+    usrBtn.append(usrIcon);
+    div.append(input);
+    div.append(searchBtn);
+    div.append(usrBtn);
+    div.append(dropdown);
+    dropdown.style.display='none';
+    div[0].style.margin = '5px 5px 5px auto';
+    toolbar.append(div);
+    
+    function userButton() {
+      //dropdown.classList.toggle("show");
+      dropdown.style.display = 'block';
+    }
+
+    // Close the dropdown if the user clicks outside of it
+    window.onclick = function(e) {
+      if (!e.target.matches('.dropbtn')) {
+        if (dropdown.style.display=='block') {
+          dropdown.style.display='none';
+        }
+      }
+    } 
+
+    theScope.send({payload:a}); //Send something when refreshing page
+    </script> 
+    
+    <!-- load maps -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GMAPS_API_KEY_HERE&callback=initMap"
+    async defer></script>
+  </body>
+</html>
