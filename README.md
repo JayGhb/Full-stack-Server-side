@@ -30,3 +30,5 @@ Pins show cities where a number of devices is placed. Clicking on a pin will lis
 
   <img src="https://github.com/JayGhb/Full-stack-Server-side/blob/master/scrnsht/data.png" width="300" />
 </p>
+
+Still a work in progress (future work e.g. determine packages format, package parsing and more)
