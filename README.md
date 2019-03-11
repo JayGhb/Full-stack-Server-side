@@ -26,7 +26,7 @@ Pins show cities where a number of devices is placed. Clicking on a pin will lis
   
   <img src="https://github.com/JayGhb/Full-stack-Server-side/blob/master/scrnsht/login.png" width="300" />
 
-  <img src="https://github.com/JayGhb/Full-stack-Server-side/blob/master/scrnsht/map.png" width="300" />
+  <img src="https://github.com/JayGhb/Full-stack-Server-side/blob/master/scrnsht/map2.png" width="300" />
 
   <img src="https://github.com/JayGhb/Full-stack-Server-side/blob/master/scrnsht/data.png" width="300" />
 </p>
