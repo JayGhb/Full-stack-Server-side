@@ -10,7 +10,7 @@ As seen in the screenshots, multiple devices are placed in cities of the world, 
 * Any changes regarding pins or device names in the database are visible uppon just reloading the map interface (no re-deployment necessary)
 * The incoming data follow a specific format and are being parsed uppon receiving
 * The incoming data are "raw". All conversions from hexademical format to human readable values are carried out on the server side uppon parsing
-* A crc code is receieved with every datastring. A new crc code is recalculated on server side uppon receiving. Data are being stored (and ok reply sent) only if the 2 codes are equal. NOK reply is sent otherwise. The crc function used is the 32-bit CRC-MPEG2
+* A crc code is received with every datastring. A new crc code is recalculated on server side uppon receiving. Data are being stored (and ok reply sent) only if the 2 codes are equal. NOK reply is sent otherwise. The crc function used is the 32-bit CRC-MPEG2
 * maps_code.html contains the html/css and JavaScript required for the GMaps inteface. html/css/JS are contained all in one file (one UI Template node in the flow) due to the nature of Node-Red
 
 The flow and rest of the code can not be set to public use but are available uppon request for important cases (e.g. interview) .
